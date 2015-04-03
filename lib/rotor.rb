@@ -9,8 +9,10 @@ class Rotor
   end
 
   def translate_left position
+    position
   end
 
   def translate_right position
+    position
   end
 end

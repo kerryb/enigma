@@ -3,5 +3,6 @@ class Reflector
   end
 
   def map position
+    position
   end
 end
