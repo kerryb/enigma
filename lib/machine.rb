@@ -17,6 +17,6 @@ class Machine
   private
 
   def rotors_to_advance
-    ([@rotors.first] + @rotors.each_cons(2).select {|right, left| right.rollover? }.flatten).uniq
+    ([@rotors.first] + @rotors.each_cons(2).select {|right, left| right.turnover? }.flatten).uniq
   end
 end
