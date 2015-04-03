@@ -10,6 +10,10 @@ class Rotor
     current_letter == @turnover_position
   end
 
+  def position= letter
+    @position = ALPHABET.index letter
+  end
+
   def advance
     @position = (@position + 1) % 26
   end

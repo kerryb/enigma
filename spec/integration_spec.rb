@@ -27,4 +27,18 @@ describe "Integration" do
       expect(encrypt "HELLOWORLD").to eq "ZXVMIZYFEY"
     end
   end
+
+  context "using rotors set to different initial positions" do
+    subject(:machine) { Machine.new rotors: [rotor_1, rotor_2, rotor_3], reflector: reflector }
+
+    before do
+      rotor_1.position = "B"
+      rotor_2.position = "X"
+      rotor_3.position = "J"
+    end
+
+    it "encrypts correctly" do
+      expect(encrypt "HELLOWORLD").to eq "QNDMFRCGTS"
+    end
+  end
 end

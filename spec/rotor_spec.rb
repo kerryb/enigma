@@ -12,7 +12,7 @@ describe Rotor do
     end
 
     it "is true when in the turnover position" do
-      16.times { subject.advance }
+      subject.position = "Q"
       expect(subject).to be_turnover
     end
   end
