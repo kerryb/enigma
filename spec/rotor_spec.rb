@@ -3,13 +3,18 @@ require "rotor"
 describe Rotor do
   subject { described_class.new(
     #ABCDEFGHIJKLMNOPQRSTUVWXYZ
-    "EKMFLGDQVZNTOWYHXUSPAIBRCJ", ["Q"]
+    "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q"
   )}
 
   describe "#turnover?" do
-    it "is true when the current position aligns with a turnover notch"
+    it "is normally false" do
+      expect(subject).not_to be_turnover
+    end
 
-    it "is false otherwise"
+    it "is true when in the turnover position" do
+      16.times { subject.advance }
+      expect(subject).to be_turnover
+    end
   end
 
   describe "#translate_left" do

@@ -1,11 +1,13 @@
 class Rotor
-  def initialize mapping, turnover_positions
+  def initialize mapping, turnover_position
     @leftward_mapping = ALPHABET.zip(mapping.chars).to_h
     @rightward_mapping = @leftward_mapping.invert
+    @turnover_position = turnover_position
     @position = 0
   end
 
   def turnover?
+    current_letter == @turnover_position
   end
 
   def advance
@@ -32,5 +34,9 @@ class Rotor
 
   def position_of_letter letter
     ALPHABET.rotate(@position).index letter
+  end
+
+  def current_letter
+    letter_in_position 0
   end
 end

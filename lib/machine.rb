@@ -9,7 +9,7 @@ class Machine
     letters = (?A..?Z).to_a
     input_position = letters.index(letter)
     reflector_input = @rotors.reduce(input_position) {|position, rotor| rotor.translate_left position }
-    reflector_output = @reflector.map reflector_input
+    reflector_output = @reflector.translate reflector_input
     output_position = @rotors.reverse.reduce(reflector_output) {|position, rotor| rotor.translate_right position }
     letters[output_position]
   end

@@ -41,7 +41,7 @@ describe Machine do
       allow(right_rotor).to receive(:translate_left).with(0) { 1 }
       allow(middle_rotor).to receive(:translate_left).with(1) { 2 }
       allow(left_rotor).to receive(:translate_left).with(2) { 3 }
-      allow(reflector).to receive(:map).with(3) { 4 }
+      allow(reflector).to receive(:translate).with(3) { 4 }
       allow(left_rotor).to receive(:translate_right).with(4) { 5 }
       allow(middle_rotor).to receive(:translate_right).with(5) { 6 }
       allow(right_rotor).to receive(:translate_right).with(6) { 7 }
