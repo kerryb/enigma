@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+require "ostruct"
+
+$:.unshift File.expand_path("../lib", __dir__)
+require "machine"
+require "rotor"
+require "reflector"
+
+options = OpenStruct.new
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: enigma [options] plaintext-or-cyphertext"
+
+  opts.on "-rROTORS", "--rotors ROTORS", Array, "[required] Comma-separated list of rotors to use (some combination of I, II and III)" do |rotors|
+    options.rotors = rotors
+  end
+
+  opts.on "-pPOSITIONS", "--positions POSITIONS", Array, "[required] Comma-separated list of initial rotor positions (eg A,B,C)" do |positions|
+    options.positions = positions
+  end
+
+  opts.on "-h", "--help", "Print this help" do
+    puts opts
+    exit
+  end
+end.parse! ARGV
+
+abort "Missing rotors option (run with -h for help)" unless options.rotors
+abort "Missing positions option (run with -h for help)" unless options.positions
+
+ROTORS = {
+  "I" => Rotor.new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q"),
+  "II" => Rotor.new("AJDKSIRUXBLHWTMCQGZNPYFVOE", "E"),
+  "III" => Rotor.new("BDFHJLCPRTXVZNYEIWGAKMUSQO", "V"),
+}
+
+rotors = ROTORS.values_at(*options.rotors)
+rotors.zip(options.positions).each {|(rotor, position)| rotor.position = position }
+reflector = Reflector.new "YRUHQSLDPXNGOKMIEBFZCWVJAT"
+machine = Machine.new rotors: rotors, reflector: reflector
+
+puts ARGV.join.upcase.tr("^A-Z", "").chars.map {|c| machine.encrypt c }.each_slice(5).map(&:join).join " "
+
