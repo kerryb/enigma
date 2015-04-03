@@ -1,11 +1,12 @@
 require "machine"
 
 describe Machine do
+  let(:plugboard) { double :plugboard }
   let(:left_rotor) { spy :left_rotor, turnover?: false }
   let(:middle_rotor) { spy :middle_rotor, turnover?: false }
   let(:right_rotor) { spy :right_rotor, turnover?: false }
   let(:reflector) { spy :reflector }
-  subject { described_class.new rotors: [right_rotor, middle_rotor, left_rotor], reflector: reflector }
+  subject { described_class.new plugboard: plugboard, rotors: [right_rotor, middle_rotor, left_rotor], reflector: reflector }
 
   describe "#encrypt" do
     it "advances the first rotor" do

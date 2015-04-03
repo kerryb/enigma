@@ -1,5 +1,5 @@
 class Machine
-  def initialize rotors:, reflector:
+  def initialize plugboard:, rotors:, reflector:
     @rotors = rotors
     @reflector = reflector
   end
