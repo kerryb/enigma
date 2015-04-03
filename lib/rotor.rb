@@ -1,6 +1,7 @@
 class Rotor
   def initialize mapping, turnover_positions
     @leftward_mapping = ALPHABET.zip(mapping.chars).to_h
+    @rightward_mapping = @leftward_mapping.invert
     @position = 0
   end
 
@@ -17,7 +18,8 @@ class Rotor
   end
 
   def translate_right contact
-    contact
+    letter = @rightward_mapping.fetch letter_in_position(contact)
+    position_of_letter letter
   end
 
   private
