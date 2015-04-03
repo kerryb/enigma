@@ -5,10 +5,12 @@ require "ostruct"
 
 $:.unshift File.expand_path("../lib", __dir__)
 require "machine"
+require "plugboard"
 require "rotor"
 require "reflector"
 
 options = OpenStruct.new
+options.patches = []
 
 OptionParser.new do |opts|
   opts.banner = "Usage: enigma [options] plaintext-or-cyphertext"
@@ -17,8 +19,12 @@ OptionParser.new do |opts|
     options.rotors = rotors
   end
 
-  opts.on "-pPOSITIONS", "--positions POSITIONS", Array, "[required] Comma-separated list of initial rotor positions (eg A,B,C)" do |positions|
+  opts.on "-sPOSITIONS", "--start POSITIONS", Array, "[required] Comma-separated list of start rotor positions (eg A,B,C)" do |positions|
     options.positions = positions
+  end
+
+  opts.on "-pPAIRS", "--patch PAIRS", Array, "Comma-separated list of plugboard patches (eg AB,CD)" do |patches|
+    options.patches = patches
   end
 
   opts.on "-h", "--help", "Print this help" do
@@ -28,7 +34,7 @@ OptionParser.new do |opts|
 end.parse! ARGV
 
 abort "Missing rotors option (run with -h for help)" unless options.rotors
-abort "Missing positions option (run with -h for help)" unless options.positions
+abort "Missing start option (run with -h for help)" unless options.positions
 
 ROTORS = {
   "I" => Rotor.new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q"),
@@ -36,10 +42,15 @@ ROTORS = {
   "III" => Rotor.new("BDFHJLCPRTXVZNYEIWGAKMUSQO", "V"),
 }
 
+plugboard = Plugboard.new
+options.patches.each {|patch| plugboard.patch(*patch.chars) }
+
 rotors = ROTORS.values_at(*options.rotors)
 rotors.zip(options.positions).each {|(rotor, position)| rotor.position = position }
+
 reflector = Reflector.new "YRUHQSLDPXNGOKMIEBFZCWVJAT"
-machine = Machine.new rotors: rotors, reflector: reflector
+
+machine = Machine.new plugboard: plugboard, rotors: rotors, reflector: reflector
 
 puts ARGV.join.upcase.tr("^A-Z", "").chars.map {|c| machine.encrypt c }.each_slice(5).map(&:join).join " "
 
