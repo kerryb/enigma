@@ -1,14 +1,24 @@
 require "machine"
+require "input_wheel"
 require "plugboard"
 require "rotor"
 require "reflector"
 
 describe "Integration" do
-  subject(:machine) { Machine.new rotors: [rotor_1, rotor_2, rotor_3], reflector: reflector, plugboard: plugboard }
+  subject(:machine) {
+    Machine.new(
+      plugboard: plugboard,
+      input_wheel: input_wheel,
+      rotors: rotors,
+      reflector: reflector,
+    )
+  }
   let(:plugboard) { Plugboard.new }
+  let(:input_wheel) { InputWheel.new "ABCDEFGHIJKLMNOPQRSTUVWXYZ" }
   let(:rotor_1) { Rotor.new "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q" }
   let(:rotor_2) { Rotor.new "AJDKSIRUXBLHWTMCQGZNPYFVOE", "E" }
   let(:rotor_3) { Rotor.new "BDFHJLCPRTXVZNYEIWGAKMUSQO", "V" }
+  let(:rotors) { [rotor_1, rotor_2, rotor_3] }
   let(:reflector) { Reflector.new "YRUHQSLDPXNGOKMIEBFZCWVJAT" }
 
   def encrypt plaintext
@@ -22,7 +32,7 @@ describe "Integration" do
   end
 
   context "using rotors in a different order" do
-    subject(:machine) { Machine.new rotors: [rotor_2, rotor_3, rotor_1], reflector: reflector, plugboard: plugboard }
+    let(:rotors) { [rotor_2, rotor_3, rotor_1] }
 
     it "encrypts correctly" do
       expect(encrypt "HELLOWORLD").to eq "ZXVMIZYFEY"

@@ -1,12 +1,20 @@
 require "machine"
 
 describe Machine do
+  let(:input_wheel) { double(:input_wheel).as_null_object }
   let(:plugboard) { double(:plugboard).as_null_object }
   let(:left_rotor) { spy :left_rotor, turnover?: false }
   let(:middle_rotor) { spy :middle_rotor, turnover?: false }
   let(:right_rotor) { spy :right_rotor, turnover?: false }
   let(:reflector) { spy :reflector }
-  subject { described_class.new plugboard: plugboard, rotors: [right_rotor, middle_rotor, left_rotor], reflector: reflector }
+  subject {
+    described_class.new(
+      input_wheel: input_wheel,
+      plugboard: plugboard,
+      rotors: [right_rotor, middle_rotor, left_rotor],
+      reflector: reflector
+    )
+  }
 
   describe "#encrypt" do
     it "advances the first rotor" do
@@ -38,8 +46,9 @@ describe Machine do
       expect(right_rotor).to have_received(:advance).once
     end
 
-    it "sends the signal through the plugboard and rotors to the reflector and back" do
+    it "sends the signal through the plugboard, input wheel and rotors to the reflector and back" do
       allow(plugboard).to receive(:translate).with("A") { "B" }
+      allow(input_wheel).to receive(:translate_left).with("B") { 1 }
       allow(right_rotor).to receive(:translate_left).with(1) { 2 }
       allow(middle_rotor).to receive(:translate_left).with(2) { 3 }
       allow(left_rotor).to receive(:translate_left).with(3) { 4 }
@@ -47,8 +56,9 @@ describe Machine do
       allow(left_rotor).to receive(:translate_right).with(5) { 6 }
       allow(middle_rotor).to receive(:translate_right).with(6) { 7 }
       allow(right_rotor).to receive(:translate_right).with(7) { 8 }
-      allow(plugboard).to receive(:translate).with("I") { "J" }
-      expect(subject.encrypt "A").to eq "J"
+      allow(input_wheel).to receive(:translate_right).with(8) { "H" }
+      allow(plugboard).to receive(:translate).with("H") { "I" }
+      expect(subject.encrypt "A").to eq "I"
     end
   end
 end

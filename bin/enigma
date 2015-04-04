@@ -5,6 +5,7 @@ require "ostruct"
 
 $:.unshift File.expand_path("../lib", __dir__)
 require "machine"
+require "input_wheel"
 require "plugboard"
 require "rotor"
 require "reflector"
@@ -67,6 +68,8 @@ ROTORS = {
   "III" => Rotor.new("BDFHJLCPRTXVZNYEIWGAKMUSQO", "V"),
 }
 
+input_wheel = InputWheel.new "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 plugboard = Plugboard.new
 options.patches.each {|patch| plugboard.patch(*patch.chars) }
 
@@ -76,7 +79,7 @@ rotors.zip(options.positions).each {|(rotor, position)| rotor.position = positio
 
 reflector = Reflector.new "YRUHQSLDPXNGOKMIEBFZCWVJAT"
 
-machine = Machine.new plugboard: plugboard, rotors: rotors, reflector: reflector
+machine = Machine.new input_wheel: input_wheel, plugboard: plugboard, rotors: rotors, reflector: reflector
 
 puts ARGV.join.upcase.tr("^A-Z", "").chars.map {|c| machine.encrypt c }.each_slice(5).map(&:join).join " "
 
