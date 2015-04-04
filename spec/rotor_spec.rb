@@ -29,6 +29,12 @@ describe Rotor do
       expect(subject.translate_left 25).to eq 3 # 25 => A => E => 3
     end
 
+    it "adjusts for ring setting" do
+      subject.ring_setting = 2 # default is 1
+      expect(subject.translate_left 0).to eq 10 # 0 => A => K => 10
+      expect(subject.translate_left 25).to eq 3 # 25 => Z => D => 3
+    end
+
     it "returns to its initial position after a full rotation" do
       26.times { subject.advance }
       expect(subject.translate_left 0).to eq 4 # 0 => A => E => 4

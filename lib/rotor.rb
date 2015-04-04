@@ -1,13 +1,19 @@
 class Rotor
   def initialize mapping, turnover_position
-    @leftward_mapping = ALPHABET.zip(mapping.chars).to_h
-    @rightward_mapping = @leftward_mapping.invert
+    @mapping = mapping
     @turnover_position = turnover_position
+    @ring_offset = 0
     @position = 0
+    calculate_mappings
   end
 
   def turnover?
     current_letter == @turnover_position
+  end
+
+  def ring_setting= setting
+    @ring_offset = setting - 1
+    calculate_mappings
   end
 
   def position= letter
@@ -31,6 +37,15 @@ class Rotor
   private
 
   ALPHABET = (?A..?Z).to_a
+
+  def calculate_mappings
+    @leftward_mapping = offset(ALPHABET).zip(offset(@mapping.chars)).to_h
+    @rightward_mapping = @leftward_mapping.invert
+  end
+
+  def offset chars
+    chars.map {|char| ALPHABET[(ALPHABET.index(char) + @ring_offset) % 26] }
+  end
 
   def letter_in_position position
     ALPHABET[(@position + position) % 26]

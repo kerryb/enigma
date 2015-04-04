@@ -23,6 +23,10 @@ OptionParser.new do |opts|
     options.positions = positions
   end
 
+  opts.on "-gSETTINGS", "--ring SETTINGS", Array, "Comma-separated list of ring settings (eg 5,10,15) - defaults to (1,1,1)" do |ring_settings|
+    options.ring_settings = ring_settings.map(&:to_i)
+  end
+
   opts.on "-pPAIRS", "--patch PAIRS", Array, "Comma-separated list of plugboard patches (eg AB,CD)" do |patches|
     options.patches = patches
   end
@@ -36,6 +40,8 @@ end.parse! ARGV
 abort "Missing rotors option (run with -h for help)" unless options.rotors
 abort "Missing start option (run with -h for help)" unless options.positions
 
+options.ring_settings ||= [1] * options.rotors.size
+
 ROTORS = {
   "I" => Rotor.new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q"),
   "II" => Rotor.new("AJDKSIRUXBLHWTMCQGZNPYFVOE", "E"),
@@ -46,6 +52,7 @@ plugboard = Plugboard.new
 options.patches.each {|patch| plugboard.patch(*patch.chars) }
 
 rotors = ROTORS.values_at(*options.rotors)
+rotors.zip(options.ring_settings).each {|(rotor, setting)| rotor.ring_setting = setting }
 rotors.zip(options.positions).each {|(rotor, position)| rotor.position = position }
 
 reflector = Reflector.new "YRUHQSLDPXNGOKMIEBFZCWVJAT"

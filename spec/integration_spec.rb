@@ -4,6 +4,7 @@ require "rotor"
 require "reflector"
 
 describe "Integration" do
+  subject(:machine) { Machine.new rotors: [rotor_1, rotor_2, rotor_3], reflector: reflector, plugboard: plugboard }
   let(:plugboard) { Plugboard.new }
   let(:rotor_1) { Rotor.new "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q" }
   let(:rotor_2) { Rotor.new "AJDKSIRUXBLHWTMCQGZNPYFVOE", "E" }
@@ -15,8 +16,6 @@ describe "Integration" do
   end
 
   context "using rotors I, II, III in home positions" do
-    subject(:machine) { Machine.new rotors: [rotor_1, rotor_2, rotor_3], reflector: reflector, plugboard: plugboard }
-
     it "encrypts correctly" do
       expect(encrypt "HELLOWORLD").to eq "MFNCZBBFZM"
     end
@@ -31,8 +30,6 @@ describe "Integration" do
   end
 
   context "with patch cables on the plugboard" do
-    subject(:machine) { Machine.new rotors: [rotor_1, rotor_2, rotor_3], reflector: reflector, plugboard: plugboard }
-
     before do
       plugboard.patch "C", "Q"
       plugboard.patch "X", "P"
@@ -44,8 +41,6 @@ describe "Integration" do
   end
 
   context "using rotors set to different initial positions" do
-    subject(:machine) { Machine.new rotors: [rotor_1, rotor_2, rotor_3], reflector: reflector, plugboard: plugboard }
-
     before do
       rotor_1.position = "B"
       rotor_2.position = "X"
@@ -57,9 +52,19 @@ describe "Integration" do
     end
   end
 
-  context "with turnover of middle and left wheels" do
-    subject(:machine) { Machine.new rotors: [rotor_1, rotor_2, rotor_3], reflector: reflector, plugboard: plugboard }
+  context "using rotors with different ring settings" do
+    before do
+      rotor_1.ring_setting = 5
+      rotor_2.ring_setting = 13
+      rotor_3.ring_setting = 20
+    end
 
+    it "encrypts correctly" do
+      expect(encrypt "HELLOWORLD").to eq "JCEESPSDYR"
+    end
+  end
+
+  context "with turnover of middle and left wheels" do
     before do
       rotor_1.position = "P"
       rotor_2.position = "E"
