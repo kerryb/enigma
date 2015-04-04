@@ -13,7 +13,26 @@ options = OpenStruct.new
 options.patches = []
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: enigma [options] plaintext-or-cyphertext"
+  opts.banner = <<-EOF
+Usage: enigma [options] plaintext-or-cyphertext
+
+Simulates a model I Enigma machine.
+
+Example
+Let's say you want to encrypt or decrypt (the cypher is symmetrical, so the operations are
+identical) with the following initial settings:
+
+  Right rotor: Rotor II, with a ring setting of 10, and an initial position of "G"
+  Middle rotor: Rotor I, with a ring setting of 3, and an initial position of "X"
+  Left rotor: Rotor III, with a ring setting of 22, and an initial position of "C"
+  Plugboard: swap "H" with "A", "Y" with "J" and "K" with "E"
+
+You would use the following options:
+
+  -rII,I,III -g10,3,22 -sG,X,C -pHA,YJ,KE
+
+Options:
+  EOF
 
   opts.on "-rROTORS", "--rotors ROTORS", Array, "[required] Comma-separated list of rotors to use (some combination of I, II and III)" do |rotors|
     options.rotors = rotors
@@ -23,7 +42,7 @@ OptionParser.new do |opts|
     options.positions = positions
   end
 
-  opts.on "-gSETTINGS", "--ring SETTINGS", Array, "Comma-separated list of ring settings (eg 5,10,15) - defaults to (1,1,1)" do |ring_settings|
+  opts.on "-gSETTINGS", "--ring SETTINGS", Array, "Comma-separated list of ring settings (eg 5,10,15 - defaults to 1,1,1)" do |ring_settings|
     options.ring_settings = ring_settings.map(&:to_i)
   end
 
