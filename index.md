@@ -362,7 +362,7 @@ working correctly, you should get your original text back.
 In the following table, rotors, ring settings and start positions all apply
 left to right, so for example &ldquo;I III II, 1 2 3, A B C&rdquo; means that the left
 position is taken by rotor I in ring position 1, rotated to show &ldquo;A&rdquo;, and so
-on.
+on. All examples use reflector _UKW-B_.
 
 <table class="noborder nowrap">
   <tr>
