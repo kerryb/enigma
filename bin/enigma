@@ -12,6 +12,7 @@ require "reflector"
 
 options = OpenStruct.new
 options.patches = []
+options.reflector = "B"
 
 OptionParser.new do |opts|
   opts.banner = <<-EOF
@@ -27,10 +28,11 @@ identical) with the following initial settings:
   Middle rotor: Rotor I, with a ring setting of 3, and an initial position of "X"
   Left rotor: Rotor III, with a ring setting of 22, and an initial position of "C"
   Plugboard: swap "H" with "A", "Y" with "J" and "K" with "E"
+  Reflector: UKW-A
 
 You would use the following options:
 
-  -rII,I,III -g10,3,22 -sG,X,C -pHA,YJ,KE
+  -rII,I,III -g10,3,22 -sG,X,C -pHA,YJ,KE -uA
 
 Options:
   EOF
@@ -51,6 +53,10 @@ Options:
     options.patches = patches
   end
 
+  opts.on "-uREFLECTOR", "--reflector REFLECTOR", "Reflector (A, B or C) - defaults to B" do |reflector|
+    options.reflector = reflector
+  end
+
   opts.on "-h", "--help", "Print this help" do
     puts opts
     exit
@@ -68,6 +74,12 @@ ROTORS = {
   "III" => Rotor.new("BDFHJLCPRTXVZNYEIWGAKMUSQO", "V"),
 }
 
+REFLECTORS = {
+  "A" => Reflector.new("EJMZALYXVBWFCRQUONTSPIKHGD"),
+  "B" => Reflector.new("YRUHQSLDPXNGOKMIEBFZCWVJAT"),
+  "C" => Reflector.new("FVPJIAOYEDRZXWGCTKUQSBNMHL"),
+}
+
 input_wheel = InputWheel.new "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 plugboard = Plugboard.new
@@ -77,7 +89,7 @@ rotors = ROTORS.values_at(*options.rotors)
 rotors.zip(options.ring_settings).each {|(rotor, setting)| rotor.ring_setting = setting }
 rotors.zip(options.positions).each {|(rotor, position)| rotor.position = position }
 
-reflector = Reflector.new "YRUHQSLDPXNGOKMIEBFZCWVJAT"
+reflector = REFLECTORS.fetch options.reflector
 
 machine = Machine.new input_wheel: input_wheel, plugboard: plugboard, rotors: rotors, reflector: reflector
 
