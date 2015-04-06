@@ -76,12 +76,23 @@ describe "Integration" do
 
   context "with turnover of middle and left wheels" do
     before do
-      rotor_1.position = "P"
+      rotor_1.position = "Q"
       rotor_2.position = "E"
     end
 
     it "encrypts correctly" do
-      expect(encrypt "HELLOWORLD").to eq "SBYPKYUPVB"
+      expect(encrypt "HELLOWORLD").to eq "NIJMQPUDGW"
+    end
+  end
+
+  context "with double turnover" do
+    before do
+      rotor_1.position = "P"
+      rotor_2.position = "D"
+    end
+
+    it "encrypts correctly" do
+      expect(encrypt "HELLOWORLD").to eq "XUWJPJIBIE"
     end
   end
 end
