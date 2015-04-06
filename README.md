@@ -1,6 +1,6 @@
 My attempt at simulating an Enigma machine in Ruby.
 
-[Full description](http://kerryb.github.io/enigma/)
+See [the project page](http://kerryb.github.io/enigma/) for a full description.
 
 Run the tests:
 
