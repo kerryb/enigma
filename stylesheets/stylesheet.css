@@ -423,3 +423,15 @@ Small Device Styles
   }
 
 }
+
+/*******************************************************************************
+Local Styles
+*******************************************************************************/
+
+table.noborder, table.noborder td {
+  border: none;
+}
+
+table.nowrap td {
+  white-space: nowrap;
+}
